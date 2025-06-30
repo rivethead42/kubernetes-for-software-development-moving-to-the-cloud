@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xerxes-international
+  labels:
+    name: xerxes-international
+    environment: production 
