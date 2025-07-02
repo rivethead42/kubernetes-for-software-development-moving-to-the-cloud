@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: xerxes-website
-        image: xerxes-international:latest
+        image: rivethead42/xerxes-site:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
