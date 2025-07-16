@@ -59,21 +59,64 @@ Configure the AWS credicials:
 aws configure
 ```
 
+Deploy the EKS Cluster:
+```
+eksctl create cluster --name pscluster --nodes-min=3 --nodes-max=4 --instance-selector-vcpus=2 --instance-selector-memory=4 --version=1.32 --node-ami-family=AmazonLinux2023
+```
+
 ## Setup kubeconfig:
 ```
 aws eks --region us-east-1 update-kubeconfig --name pscluster
 ```
 
-Deploy the EKS Cluster:
+# Module 3 Demo 5: Deploying a Basic Application to EKS
+
+Create a deploymet for Xerxes
 ```
-eksctl create cluster --name pscluster --nodes-min=3 --nodes-max=4 --instance-selector-vcpus=2 --instance-selector-memory=4 --version=1.30
+kubectl apply -f deployment.yaml 
 ```
 
-# Module 3 Demo 5: Deploying a Basic Application to EKS
+Check on the pods
+```
+kubectl get po
+```
+
+Create a service to make the pods publicly accessible
+```
+kubectl apply -f service.yaml
+```
+
+List the services
+```
+kubectl get svc
+```
+
+Create a service to make the pods publicly accessible
+```
+kubectl apply -f hpa.yaml 
+```
 
 # Module 3 Demo 6: Using eksctl to Upgrade a Cluster
 
+Upgrade Kubernetes to Version 1.33
+``` 
+eksctl upgrade cluster --name pscluster --version 1.33 --approve
+```
+
 # Module 3 Demo 7: Managing EKS with eksctl
+[AMI Releaser version](https://github.com/awslabs/amazon-eks-ami/releases)
+```
+eksctl upgrade nodegroup --name <node_group_name> --cluster pscluster --release-version <release>
+```
+Change the number of nodes
+```
+eksctl scale nodegroup --cluster pscluster --name <node_group_name> --nodes 5
+```
+
+Change the min and max nodes
+```
+eksctl scale nodegroup --cluster pscluster --name <node_group_name> --nodes-min 2 --nodes-max 10
+```
 
 # Module 3 Demo 8: Destroying the EKS Cluster
 
