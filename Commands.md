@@ -15,6 +15,7 @@ az login --tenant <TENANT_ID>
 az group create --name <USERNAME>-rg --location eastus
 ```
 
+## Register providers
 ```
 az provider register --namespace Microsoft.OperationalInsights
 az provider register --namespace microsoft.insights
