@@ -1,75 +1,44 @@
-# Module 3 Demo 1: Installing kubectl
+# Module 4 Demo 1: Install and Configure Azure CLI
 
-## Install Kubectl
-```
-choco install kubernetes-cli
-```
-[Kubectl Install Docs](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/#install-nonstandard-package-tools)
+## Install Azure CLI
+[Azure CLI Downlaod](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest&pivots=msi)
 
-# Module 3 Demo 2: Install and Configure AWS CLI and eksctl
-## Install EksClt:
-```
-choco install eksctl
-```
-[EksCtl Install Docs](https://eksctl.io/installation/)
+## Login to Azure
 
-## Install AWS CLI on Windows:
 ```
-msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
-```
-[AWS CLI Install Docs](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-
-# Module 3 Demo 3: Create AWS User and Key
-
-## AWS Policies Setup
-Create a user group called eks-group witht the following policies:
-```
-AmazonEC2FullAccess
-IAMFullAccess
-AWSCloudFormationFullAccess
+az login --tenant <TENANT_ID>
 ```
 
-Create an inline policy called eks-policy:
+## Create a resource group
+
 ```
-{
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Sid": "Statement1",
-			"Effect": "Allow",
-			"Action": "eks:*",
-			"Resource": "*"
-		},
-        {
-            "Action": [
-                "ssm:GetParamater",
-                "ssm:GetParamaters"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
-	]
-}
+az group create --name <USERNAME>-rg --location eastus
 ```
 
-# Module 3 Demo 4: Create an EKS Cluster with eksctl
-## Create the EKS cluster
-Configure the AWS credicials:
 ```
-aws configure
+az provider register --namespace Microsoft.OperationalInsights
+az provider register --namespace microsoft.insights
 ```
 
-Deploy the EKS Cluster:
+# Module 4 Demo 2: Create AKS Cluster with Azure CLI
+
 ```
-eksctl create cluster --name pscluster --nodes-min=3 --nodes-max=4 --instance-selector-vcpus=2 --instance-selector-memory=4 --version=1.32 --node-ami-family=AmazonLinux2023
+az aks create \
+    --resource-group <RESOURCE_GROUP> \
+    --name <NAME> \
+    --node-count 1 \
+    --enable-addons monitoring \
+    --generate-ssh-keys \
+    --kubernetes-version 1.32.5 \
+    --node-vm-size standard_a2_v2
 ```
 
-## Setup kubeconfig:
+## Connect to the cluster
 ```
-aws eks --region us-east-1 update-kubeconfig --name pscluster
+az aks get-credentials --resource-group tthomsen-rg --name pscluster --overwrite-existing
 ```
 
-# Module 3 Demo 5: Deploying a Basic Application to EKS
+# Module 4 Demo 3: Deploying a Basic Application to AKE
 
 Create a deploymet for Xerxes
 ```
@@ -96,32 +65,35 @@ Create a service to make the pods publicly accessible
 kubectl apply -f hpa.yaml 
 ```
 
-# Module 3 Demo 6: Using eksctl to Upgrade a Cluster
+# Module 4 Demo 4: Using Azure CLI to Upgrade an AKS Cluster
 
-Upgrade Kubernetes to Version 1.33
+## Get avalable list of upgrades
+```
+az aks get-upgrades --resource-group <RESOURCE_GROUP> --name <CLUSTER_NAME> --output table
+```
+
+Upgrade Kubernetes to Version 1.33.1
 ``` 
-eksctl upgrade cluster --name pscluster --version 1.33 --approve
+az aks upgrade \
+    --resource-group <RESOURCE_GROUP> \
+    --name <CLUSTER_NAME> \
+    --kubernetes-version <KUBERNETES_VERSION>
 ```
 
-# Module 3 Demo 7: Managing EKS with eksctl
-[AMI Releaser version](https://github.com/awslabs/amazon-eks-ami/releases)
+# Module 4 Demo 5: Managing AKS with Azure CLI
 ```
-eksctl upgrade nodegroup --name <node_group_name> --cluster pscluster --release-version <release>
-```
-Change the number of nodes
-```
-eksctl scale nodegroup --cluster pscluster --name <node_group_name> --nodes 5
-```
-
-Change the min and max nodes
-```
-eksctl scale nodegroup --cluster pscluster --name <node_group_name> --nodes-min 2 --nodes-max 10
+az aks update \
+  --resource-group <RESOURCE_GROUP> \
+  --name <CLUSTER_NAME> \
+  --enable-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 3
 ```
 
-# Module 3 Demo 8: Destroying the EKS Cluster
+# Module 43 Demo 6: Destroying the AKS Cluster
 
 ## Remove the cluster
-Deleting the EKS Cluster:
+Deleting the AKS Cluster:
 ```
-eksctl delete cluster --name pscluster
+az aks delete --resource-group <RESOURCE_GROUP> --name <CLUSTER_NAME>
 ```
