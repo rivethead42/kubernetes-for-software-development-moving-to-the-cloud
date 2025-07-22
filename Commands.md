@@ -36,7 +36,7 @@ gcloud services enable compute.googleapis.com
 ## Create the cluster
 ```
 gcloud container clusters create <CLUSTER_NAME> \
-  --num-nodes=1
+  --num-nodes=1 \
   --machine-type e2-standard-2 \
   --disk-size 30GB \
   --enable-ip-alias \
