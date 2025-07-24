@@ -110,12 +110,6 @@ gcloud container node-pools create <NODE_POOL_NAME> \
   --num-nodes=1
 ```
 
-## Drain the nodes
-```
-kubectl cordon <NODE>
-kubectl drain <NODE> --delete-local-data
-```
-
 ## Delete default Nodepool
 ```
 gcloud container node-pools delete <NODE_POOL_NAME> --cluster <CLUSTER_NAME>
