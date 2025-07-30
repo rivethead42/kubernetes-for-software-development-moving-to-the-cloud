@@ -113,9 +113,20 @@ Change the number of nodes
 eksctl scale nodegroup --cluster pscluster --name <node_group_name> --nodes 5
 ```
 
-Change the min and max nodes
+## Scale Horizontally
 ```
 eksctl scale nodegroup --cluster pscluster --name <node_group_name> --nodes-min 2 --nodes-max 10
+```
+
+## Scale Vertically
+```
+eksctl create nodegroup \
+      --cluster pscluster \
+      --name nodegroup2 \
+      --instance-selector-vcpus 4 \
+      --instance-selector-memory 8 \
+      --nodes-min 3 \
+      --nodes-max=4
 ```
 
 # Module 3 Demo 8: Destroying the EKS Cluster
